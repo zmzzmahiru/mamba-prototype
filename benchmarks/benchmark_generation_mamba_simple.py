@@ -187,6 +187,7 @@ parser.add_argument("--minp", type=float, default=0.0)
 parser.add_argument("--repetition-penalty", type=float, default=1.0)
 parser.add_argument("--batch", type=int, default=1)
 parser.add_argument("--repeats", type=int, default=3)
+parser.add_argument("--seed", type=int, default=0)
 parser.add_argument("--device", type=str, default="cuda")
 parser.add_argument("--dtype", type=str, default="float16")
 parser.add_argument("--prototype", action="store_true")
@@ -211,7 +212,11 @@ if device_name == "cuda" and not torch.cuda.is_available():
 device = torch.device(device_name)
 dtype = parse_dtype(args.dtype)
 
+torch.manual_seed(args.seed)
+
 if args.prototype:
+    if device.type == "cuda":
+        torch.cuda.manual_seed_all(args.seed)
     run_prototype_benchmark(args, device=device, dtype=dtype)
 else:
     run_generation_benchmark(args, device=device, dtype=dtype)
