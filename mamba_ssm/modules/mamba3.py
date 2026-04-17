@@ -41,6 +41,14 @@ class Mamba3(nn.Module):
         is_outproj_norm=False,
         is_mimo=False,
         mimo_rank=4,
+        enable_conditional_execution=False,
+        enable_attention_router=True,
+        enable_token_halting=True,
+        prototype_num_refinement_steps=1,
+        router_threshold=0.5,
+        halt_threshold=0.5,
+        attention_num_heads=4,
+        collect_prototype_stats=False,
         #-------------------------------------------
         # Fused kernel and sharding options
         chunk_size=64, # Recommended: 64 for SISO, 64/mimo_rank for MIMO
@@ -63,6 +71,14 @@ class Mamba3(nn.Module):
         self.is_outproj_norm=is_outproj_norm
         self.is_mimo = is_mimo
         self.mimo_rank = mimo_rank
+        self.enable_conditional_execution = enable_conditional_execution
+        self.enable_attention_router = enable_attention_router
+        self.enable_token_halting = enable_token_halting
+        self.prototype_num_refinement_steps = max(1, prototype_num_refinement_steps)
+        self.router_threshold = router_threshold
+        self.halt_threshold = halt_threshold
+        self.collect_prototype_stats = collect_prototype_stats
+        self._last_prototype_stats = None
         if not self.is_mimo:
             self.mimo_rank = 1
         else:
@@ -131,12 +147,41 @@ class Mamba3(nn.Module):
         # Output projection
         self.out_proj = nn.Linear(self.d_inner, self.d_model, bias=False, **factory_kwargs)
 
+        self.router = None
+        self.halt_head = None
+        self.prototype_attention = None
+        if self.enable_conditional_execution:
+            self.router = nn.Linear(self.d_model, 1, **factory_kwargs)
+            self.halt_head = nn.Linear(self.d_model, 1, **factory_kwargs)
+            if self.enable_attention_router:
+                if self.d_model % attention_num_heads != 0:
+                    raise ValueError(
+                        f"attention_num_heads ({attention_num_heads}) must divide d_model ({self.d_model})"
+                    )
+                self.prototype_attention = nn.MultiheadAttention(
+                    self.d_model,
+                    attention_num_heads,
+                    batch_first=True,
+                    **factory_kwargs,
+                )
+
 
     def forward(self, u, seq_idx=None, cu_seqlens=None, inference_params=None):
         """
         u: (batch, seqlen, hidden_dim)
         Returns: same shape as u
         """
+        if (
+            not self.enable_conditional_execution
+            or inference_params is not None
+            or cu_seqlens is not None
+        ):
+            self._last_prototype_stats = None
+            return self._forward_mamba(u, seq_idx=seq_idx, cu_seqlens=cu_seqlens, inference_params=inference_params)
+
+        return self._forward_conditional(u, seq_idx=seq_idx)
+
+    def _forward_mamba(self, u, seq_idx=None, cu_seqlens=None, inference_params=None):
         batch, seqlen, dim = u.shape
 
         angle_dt_state, ssm_state, k_state, v_state  = None, None, None, None
@@ -248,6 +293,89 @@ class Mamba3(nn.Module):
         
         out = self.out_proj(y.to(x.dtype))
         return out
+
+    def _compute_step_router_prob(self, hidden_states, active_mask):
+        if self.router is None:
+            return hidden_states.new_tensor(0.0)
+        mask = active_mask.to(hidden_states.dtype).unsqueeze(-1)
+        denom = mask.sum(dim=1).clamp_min(1.0)
+        pooled = (hidden_states * mask).sum(dim=1) / denom
+        return torch.sigmoid(self.router(pooled)).mean()
+
+    def _forward_conditional(self, u, seq_idx=None):
+        current_states = u
+        active_mask = torch.ones(u.shape[:2], dtype=torch.bool, device=u.device)
+        halt_steps = torch.full(
+            u.shape[:2],
+            self.prototype_num_refinement_steps,
+            dtype=torch.long,
+            device=u.device,
+        )
+        router_probs = []
+        active_fractions = []
+        halt_fractions = []
+        attention_trigger_count = 0
+        executed_steps = 0
+
+        for step_idx in range(self.prototype_num_refinement_steps):
+            executed_steps += 1
+
+            if self.enable_token_halting and self.halt_head is not None:
+                halt_probs = torch.sigmoid(self.halt_head(current_states)).squeeze(-1)
+                newly_halted = active_mask & (halt_probs >= self.halt_threshold)
+            else:
+                newly_halted = torch.zeros_like(active_mask)
+            next_active_mask = active_mask & ~newly_halted
+            halt_steps = torch.where(
+                newly_halted,
+                torch.full_like(halt_steps, step_idx + 1),
+                halt_steps,
+            )
+
+            mamba_out = self._forward_mamba(current_states, seq_idx=seq_idx)
+            current_states = torch.where(next_active_mask.unsqueeze(-1), mamba_out, current_states)
+
+            router_prob = self._compute_step_router_prob(current_states, next_active_mask)
+            router_probs.append(float(router_prob.item()))
+            should_trigger_attention = (
+                self.enable_attention_router
+                and self.prototype_attention is not None
+                and bool((router_prob >= self.router_threshold).item())
+                and bool(next_active_mask.any().item())
+            )
+            if should_trigger_attention:
+                attention_out = self.prototype_attention(
+                    current_states,
+                    current_states,
+                    current_states,
+                    need_weights=False,
+                )[0]
+                attention_out = current_states + attention_out
+                current_states = torch.where(next_active_mask.unsqueeze(-1), attention_out, current_states)
+                attention_trigger_count += 1
+
+            active_mask = next_active_mask
+            active_fractions.append(float(active_mask.float().mean().item()))
+            halt_fractions.append(float((~active_mask).float().mean().item()))
+            if not active_mask.any():
+                break
+
+        if self.collect_prototype_stats:
+            self._last_prototype_stats = {
+                "executed_steps": executed_steps,
+                "attention_trigger_count": attention_trigger_count,
+                "attention_trigger_rate": attention_trigger_count / max(executed_steps, 1),
+                "mean_active_fraction": sum(active_fractions) / max(len(active_fractions), 1),
+                "mean_halted_fraction": sum(halt_fractions) / max(len(halt_fractions), 1),
+                "mean_halt_step": float(halt_steps.to(torch.float32).mean().item()),
+                "router_probs": router_probs,
+                "active_fractions": active_fractions,
+                "halted_fractions": halt_fractions,
+            }
+        else:
+            self._last_prototype_stats = None
+
+        return current_states
     
 
     def _preprocess(self, A_proj, dd_dt, B, C, x, z, trap_proj, angle_proj):
