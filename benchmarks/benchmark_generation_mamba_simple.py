@@ -4,6 +4,7 @@ import argparse
 import time
 
 import torch
+import torch.nn.functional as F
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -22,7 +23,46 @@ def parse_dtype(dtype_name):
     return dtype_map[dtype_name]
 
 
-def build_prototype_model(args, device, dtype):
+def get_local_variant_settings(args):
+    if args.variant == "plain":
+        return {
+            "enable_conditional_execution": False,
+            "enable_attention_router": False,
+            "enable_token_halting": False,
+            "router_threshold": args.router_threshold,
+        }
+    if args.variant == "halting_only":
+        return {
+            "enable_conditional_execution": True,
+            "enable_attention_router": False,
+            "enable_token_halting": True,
+            "router_threshold": args.router_threshold,
+        }
+    if args.variant == "always_attention":
+        return {
+            "enable_conditional_execution": True,
+            "enable_attention_router": True,
+            "enable_token_halting": False,
+            "router_threshold": 0.0,
+        }
+    if args.variant == "full":
+        return {
+            "enable_conditional_execution": True,
+            "enable_attention_router": True,
+            "enable_token_halting": True,
+            "router_threshold": args.router_threshold,
+        }
+    raise ValueError(f"Unsupported variant: {args.variant}")
+
+
+def build_local_model(args, device, dtype, variant=None):
+    variant = args.variant if variant is None else variant
+    settings = get_local_variant_settings(args)
+    if variant != args.variant:
+        original_variant = args.variant
+        args.variant = variant
+        settings = get_local_variant_settings(args)
+        args.variant = original_variant
     config = MambaConfig(
         d_model=args.d_model,
         d_intermediate=0,
@@ -34,11 +74,11 @@ def build_prototype_model(args, device, dtype):
             "headdim": args.headdim,
             "expand": args.expand,
             "chunk_size": args.chunk_size,
-            "enable_conditional_execution": True,
-            "enable_attention_router": not args.disable_attention,
-            "enable_token_halting": not args.disable_halting,
+            "enable_conditional_execution": settings["enable_conditional_execution"],
+            "enable_attention_router": settings["enable_attention_router"],
+            "enable_token_halting": settings["enable_token_halting"],
             "prototype_num_refinement_steps": args.refinement_steps,
-            "router_threshold": args.router_threshold,
+            "router_threshold": settings["router_threshold"],
             "router_temperature": args.router_temperature,
             "halt_threshold": args.halt_threshold,
             "attention_num_heads": args.attention_num_heads,
@@ -78,13 +118,18 @@ def collect_prototype_stats(model):
     }
 
 
-def run_prototype_benchmark(args, device, dtype):
-    print("Running local Mamba3 full-sequence prototype benchmark")
-    model = build_prototype_model(args, device=device, dtype=dtype)
+def run_local_benchmark(args, device, dtype):
+    print(f"Running local Mamba3 full-sequence benchmark ({args.variant})")
+    torch.manual_seed(args.seed)
+    if device.type == "cuda":
+        torch.cuda.manual_seed_all(args.seed)
+    model = build_local_model(args, device=device, dtype=dtype, variant=args.variant)
     model.eval()
     print(f"Number of parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}")
 
-    torch.random.manual_seed(0)
+    torch.manual_seed(args.seed)
+    if device.type == "cuda":
+        torch.cuda.manual_seed_all(args.seed)
     input_ids = torch.randint(1, args.vocab_size, (args.batch, args.promptlen), dtype=torch.long, device=device)
 
     def fn():
@@ -109,6 +154,20 @@ def run_prototype_benchmark(args, device, dtype):
         print("Prototype stats:")
         for key, value in stats.items():
             print(f"  {key}: {value}")
+
+    if args.variant != "plain":
+        torch.manual_seed(args.seed)
+        if device.type == "cuda":
+            torch.cuda.manual_seed_all(args.seed)
+        reference_model = build_local_model(args, device=device, dtype=dtype, variant="plain")
+        reference_model.eval()
+        with torch.no_grad():
+            reference_logits = reference_model(input_ids).logits
+        drift_l2 = torch.norm((logits - reference_logits).float()).item()
+        drift_mae = F.l1_loss(logits.float(), reference_logits.float()).item()
+        print("Output drift vs plain Mamba3:")
+        print(f"  logit_l2_vs_plain_mamba3: {drift_l2}")
+        print(f"  logit_mae_vs_plain_mamba3: {drift_mae}")
 
 
 def run_generation_benchmark(args, device, dtype):
@@ -192,6 +251,7 @@ parser.add_argument("--seed", type=int, default=0)
 parser.add_argument("--device", type=str, default="cuda")
 parser.add_argument("--dtype", type=str, default="float16")
 parser.add_argument("--prototype", action="store_true")
+parser.add_argument("--variant", type=str, default="full", choices=["plain", "halting_only", "always_attention", "full"])
 parser.add_argument("--d-model", type=int, default=256)
 parser.add_argument("--n-layer", type=int, default=4)
 parser.add_argument("--vocab-size", type=int, default=1024)
@@ -204,8 +264,6 @@ parser.add_argument("--router-threshold", type=float, default=0.5)
 parser.add_argument("--router-temperature", type=float, default=1.0)
 parser.add_argument("--halt-threshold", type=float, default=0.5)
 parser.add_argument("--attention-num-heads", type=int, default=4)
-parser.add_argument("--disable-attention", action="store_true")
-parser.add_argument("--disable-halting", action="store_true")
 args = parser.parse_args()
 
 device_name = args.device
@@ -219,6 +277,6 @@ torch.manual_seed(args.seed)
 if args.prototype:
     if device.type == "cuda":
         torch.cuda.manual_seed_all(args.seed)
-    run_prototype_benchmark(args, device=device, dtype=dtype)
+    run_local_benchmark(args, device=device, dtype=dtype)
 else:
     run_generation_benchmark(args, device=device, dtype=dtype)
