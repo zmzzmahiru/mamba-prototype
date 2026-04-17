@@ -46,6 +46,7 @@ class Mamba3(nn.Module):
         enable_token_halting=True,
         prototype_num_refinement_steps=1,
         router_threshold=0.5,
+        router_temperature=1.0,
         halt_threshold=0.5,
         attention_num_heads=4,
         collect_prototype_stats=False,
@@ -76,6 +77,7 @@ class Mamba3(nn.Module):
         self.enable_token_halting = enable_token_halting
         self.prototype_num_refinement_steps = max(1, prototype_num_refinement_steps)
         self.router_threshold = router_threshold
+        self.router_temperature = max(router_temperature, 1e-6)
         self.halt_threshold = halt_threshold
         self.collect_prototype_stats = collect_prototype_stats
         self._last_prototype_stats = None
@@ -300,7 +302,8 @@ class Mamba3(nn.Module):
         mask = active_mask.to(hidden_states.dtype).unsqueeze(-1)
         denom = mask.sum(dim=1).clamp_min(1.0)
         pooled = (hidden_states * mask).sum(dim=1) / denom
-        return torch.sigmoid(self.router(pooled)).mean()
+        router_logits = self.router(pooled) / self.router_temperature
+        return torch.sigmoid(router_logits).mean()
 
     def _forward_conditional(self, u, seq_idx=None):
         current_states = u

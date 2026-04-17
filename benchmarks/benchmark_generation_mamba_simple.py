@@ -39,6 +39,7 @@ def build_prototype_model(args, device, dtype):
             "enable_token_halting": not args.disable_halting,
             "prototype_num_refinement_steps": args.refinement_steps,
             "router_threshold": args.router_threshold,
+            "router_temperature": args.router_temperature,
             "halt_threshold": args.halt_threshold,
             "attention_num_heads": args.attention_num_heads,
             "collect_prototype_stats": True,
@@ -200,6 +201,7 @@ parser.add_argument("--headdim", type=int, default=64)
 parser.add_argument("--chunk-size", type=int, default=64)
 parser.add_argument("--refinement-steps", type=int, default=2)
 parser.add_argument("--router-threshold", type=float, default=0.5)
+parser.add_argument("--router-temperature", type=float, default=1.0)
 parser.add_argument("--halt-threshold", type=float, default=0.5)
 parser.add_argument("--attention-num-heads", type=int, default=4)
 parser.add_argument("--disable-attention", action="store_true")
