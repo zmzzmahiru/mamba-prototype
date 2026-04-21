@@ -317,6 +317,7 @@ class Mamba3(nn.Module):
         router_probs = []
         active_fractions = []
         halt_fractions = []
+        halted_fraction_by_position = torch.zeros(u.shape[1], device=u.device, dtype=torch.float32)
         attention_trigger_count = 0
         executed_steps = 0
 
@@ -360,6 +361,7 @@ class Mamba3(nn.Module):
             active_mask = next_active_mask
             active_fractions.append(float(active_mask.float().mean().item()))
             halt_fractions.append(float((~active_mask).float().mean().item()))
+            halted_fraction_by_position += (~active_mask).float().mean(dim=0)
             if not active_mask.any():
                 break
 
@@ -374,6 +376,8 @@ class Mamba3(nn.Module):
                 "router_probs": router_probs,
                 "active_fractions": active_fractions,
                 "halted_fractions": halt_fractions,
+                "mean_halt_step_by_position": halt_steps.to(torch.float32).mean(dim=0).tolist(),
+                "halted_fraction_by_position": (halted_fraction_by_position / max(executed_steps, 1)).tolist(),
             }
         else:
             self._last_prototype_stats = None
