@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-RESULTS_DIR="results/50step_confirm"
+RESULTS_DIR="results/200step_confirm"
 mkdir -p "$RESULTS_DIR"
 
 COMMON_ARGS=(
@@ -21,7 +21,7 @@ COMMON_ARGS=(
   --block-size 128
   --batch-size 2
   --eval-batch-size 2
-  --max-train-steps 50
+  --max-train-steps 200
   --max-eval-batches 10
   --train-text-samples 100
   --val-text-samples 50

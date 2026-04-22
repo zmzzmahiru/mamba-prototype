@@ -1,14 +1,9 @@
 import csv
 import json
 import math
+import argparse
 from pathlib import Path
 from statistics import mean, stdev
-
-
-RESULTS_DIR = Path("results")
-RUN_CSV = RESULTS_DIR / "wikitext103_runs.csv"
-AGG_CSV = RESULTS_DIR / "wikitext103_aggregated.csv"
-SUMMARY_MD = RESULTS_DIR / "wikitext103_summary.md"
 
 METRICS = [
     "val_loss",
@@ -37,7 +32,7 @@ def parse_config_name(path: Path):
 
 def load_runs():
     runs = []
-    for path in sorted(RESULTS_DIR.glob("wikitext103_*_seed*.json")):
+    for path in sorted(results_dir.glob("wikitext103_*_seed*.json")):
         data = json.loads(path.read_text(encoding="utf-8"))
         data["config_name"] = parse_config_name(path)
         data["result_file"] = path.name
@@ -159,9 +154,19 @@ def write_summary_md(aggregated_rows):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Summarize WikiText-103 JSON results from one experiment directory")
+    parser.add_argument("--results-dir", type=str, required=True)
+    args = parser.parse_args()
+
+    global results_dir, RUN_CSV, AGG_CSV, SUMMARY_MD
+    results_dir = Path(args.results_dir)
+    RUN_CSV = results_dir / "wikitext103_runs.csv"
+    AGG_CSV = results_dir / "wikitext103_aggregated.csv"
+    SUMMARY_MD = results_dir / "wikitext103_summary.md"
+
     runs = load_runs()
     if not runs:
-        raise FileNotFoundError("No matching result JSON files found in results/.")
+        raise FileNotFoundError(f"No matching result JSON files found in {results_dir}.")
     write_run_csv(runs)
     aggregated_rows = aggregate_runs(runs)
     write_agg_csv(aggregated_rows)
