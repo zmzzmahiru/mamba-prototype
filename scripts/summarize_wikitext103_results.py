@@ -44,14 +44,38 @@ def to_scalar(value):
     return "" if isinstance(value, list) else value
 
 
+def _clean_numeric(values):
+    cleaned = []
+    for value in values:
+        if value is None:
+            continue
+        if isinstance(value, bool):
+            cleaned.append(float(value))
+            continue
+        if isinstance(value, (int, float)):
+            numeric = float(value)
+            if math.isfinite(numeric):
+                cleaned.append(numeric)
+            continue
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError):
+            continue
+        if math.isfinite(numeric):
+            cleaned.append(numeric)
+    return cleaned
+
+
 def safe_mean(values):
-    return mean(values) if values else float("nan")
+    cleaned = _clean_numeric(values)
+    return mean(cleaned) if cleaned else float("nan")
 
 
 def safe_std(values):
-    if len(values) <= 1:
-        return 0.0 if values else float("nan")
-    return stdev(values)
+    cleaned = _clean_numeric(values)
+    if len(cleaned) <= 1:
+        return 0.0 if cleaned else float("nan")
+    return stdev(cleaned)
 
 
 def write_run_csv(runs):
