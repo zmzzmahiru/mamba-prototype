@@ -1,0 +1,1518 @@
+
+==> python train_wikitext103.py --variant plain --seed 0 --output-json results/routeB_plain_vs_full_1000step/wikitext103_plain_seed0.json --dataset-name wikitext --dataset-config wikitext-103-raw-v1 --tokenizer EleutherAI/gpt-neox-20b --device cuda --dtype float32 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --expand 2 --block-size 128 --batch-size 2 --eval-batch-size 2 --max-train-steps 1000 --max-eval-batches 10 --train-text-samples 500 --val-text-samples 200 --max-train-tokens 65536 --max-val-tokens 16384 --learning-rate 3e-4
+[train] step=10 loss=10.8735
+[train] step=20 loss=10.6258
+[train] step=30 loss=10.1793
+[train] step=40 loss=9.6191
+[train] step=50 loss=9.2072
+[train] step=60 loss=8.7184
+[train] step=70 loss=8.3208
+[train] step=80 loss=8.0127
+[train] step=90 loss=7.5394
+[train] step=100 loss=7.3335
+[train] step=110 loss=6.6740
+[train] step=120 loss=6.9474
+[train] step=130 loss=6.8857
+[train] step=140 loss=6.6064
+[train] step=150 loss=6.4437
+[train] step=160 loss=6.5304
+[train] step=170 loss=6.7683
+[train] step=180 loss=6.9891
+[train] step=190 loss=6.4772
+[train] step=200 loss=6.1594
+[train] step=210 loss=6.4288
+[train] step=220 loss=6.2133
+[train] step=230 loss=6.5805
+[train] step=240 loss=6.1644
+[train] step=250 loss=6.2408
+[train] step=260 loss=5.5393
+[train] step=270 loss=5.3073
+[train] step=280 loss=5.5503
+[train] step=290 loss=5.5185
+[train] step=300 loss=5.6241
+[train] step=310 loss=4.8336
+[train] step=320 loss=5.7364
+[train] step=330 loss=4.8439
+[train] step=340 loss=5.1012
+[train] step=350 loss=4.5299
+[train] step=360 loss=5.3724
+[train] step=370 loss=5.2145
+[train] step=380 loss=4.7531
+[train] step=390 loss=5.3689
+[train] step=400 loss=5.2856
+[train] step=410 loss=5.3583
+[train] step=420 loss=5.1325
+[train] step=430 loss=4.5842
+[train] step=440 loss=4.7045
+[train] step=450 loss=4.7485
+[train] step=460 loss=4.7518
+[train] step=470 loss=4.7453
+[train] step=480 loss=4.2869
+[train] step=490 loss=5.3450
+[train] step=500 loss=4.5471
+[train] step=510 loss=4.4107
+[train] step=520 loss=4.2183
+[train] step=530 loss=4.0775
+[train] step=540 loss=4.4175
+[train] step=550 loss=3.9839
+[train] step=560 loss=4.5913
+[train] step=570 loss=4.0360
+[train] step=580 loss=3.9992
+[train] step=590 loss=4.2130
+[train] step=600 loss=3.9903
+[train] step=610 loss=4.2067
+[train] step=620 loss=3.9094
+[train] step=630 loss=3.8464
+[train] step=640 loss=3.3306
+[train] step=650 loss=3.7718
+[train] step=660 loss=3.7957
+[train] step=670 loss=3.5215
+[train] step=680 loss=3.7500
+[train] step=690 loss=3.5062
+[train] step=700 loss=3.6463
+[train] step=710 loss=3.7409
+[train] step=720 loss=3.0655
+[train] step=730 loss=3.1334
+[train] step=740 loss=3.4043
+[train] step=750 loss=3.7024
+[train] step=760 loss=3.2628
+[train] step=770 loss=2.9797
+[train] step=780 loss=3.2718
+[train] step=790 loss=3.3252
+[train] step=800 loss=3.1923
+[train] step=810 loss=2.8468
+[train] step=820 loss=3.4059
+[train] step=830 loss=2.6944
+[train] step=840 loss=2.8814
+[train] step=850 loss=3.3207
+[train] step=860 loss=3.1270
+[train] step=870 loss=2.5520
+[train] step=880 loss=2.5975
+[train] step=890 loss=2.9411
+[train] step=900 loss=2.8106
+[train] step=910 loss=2.7274
+[train] step=920 loss=2.5495
+[train] step=930 loss=2.4650
+[train] step=940 loss=2.9294
+[train] step=950 loss=2.4785
+[train] step=960 loss=2.4439
+[train] step=970 loss=2.7055
+[train] step=980 loss=2.3133
+[train] step=990 loss=2.7145
+[train] step=1000 loss=1.9031
+{
+  "variant": "plain",
+  "seed": 0,
+  "device": "cuda",
+  "dtype": "float32",
+  "block_size": 128,
+  "batch_size": 2,
+  "max_train_steps": 1000,
+  "parameter_count": 13088160,
+  "train_loss": 4.87430798971653,
+  "train_ppl": 130.8835491030308,
+  "train_tokens_per_second": 6549.231114412539,
+  "train_step_time_ms": 39.088557958602905,
+  "val_loss": 8.432806730270386,
+  "val_ppl": 4595.380001445334,
+  "eval_tokens_per_second": 83132.04636074357,
+  "eval_step_time_ms": 3.0794382095336914
+}
+
+==> python train_wikitext103.py --variant full --halt-threshold 0.7 --router-threshold 0.5 --router-temperature 1.0 --seed 0 --output-json results/routeB_plain_vs_full_1000step/wikitext103_full_h07_seed0.json --dataset-name wikitext --dataset-config wikitext-103-raw-v1 --tokenizer EleutherAI/gpt-neox-20b --device cuda --dtype float32 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --expand 2 --block-size 128 --batch-size 2 --eval-batch-size 2 --max-train-steps 1000 --max-eval-batches 10 --train-text-samples 500 --val-text-samples 200 --max-train-tokens 65536 --max-val-tokens 16384 --learning-rate 3e-4
+[train] step=10 loss=10.9967
+[train] step=20 loss=10.8352
+[train] step=30 loss=10.7582
+[train] step=40 loss=10.3779
+[train] step=50 loss=10.0843
+[train] step=60 loss=9.5919
+[train] step=70 loss=8.9407
+[train] step=80 loss=8.6625
+[train] step=90 loss=8.2423
+[train] step=100 loss=7.9122
+[train] step=110 loss=7.4071
+[train] step=120 loss=7.3637
+[train] step=130 loss=7.2894
+[train] step=140 loss=7.0434
+[train] step=150 loss=6.9339
+[train] step=160 loss=6.8941
+[train] step=170 loss=7.1442
+[train] step=180 loss=7.2364
+[train] step=190 loss=6.8310
+[train] step=200 loss=6.6809
+[train] step=210 loss=6.8366
+[train] step=220 loss=6.6682
+[train] step=230 loss=7.0736
+[train] step=240 loss=6.6193
+[train] step=250 loss=6.7197
+[train] step=260 loss=6.1553
+[train] step=270 loss=6.0271
+[train] step=280 loss=6.1441
+[train] step=290 loss=6.0984
+[train] step=300 loss=6.3067
+[train] step=310 loss=5.5342
+[train] step=320 loss=6.4911
+[train] step=330 loss=5.5472
+[train] step=340 loss=5.8586
+[train] step=350 loss=5.2993
+[train] step=360 loss=5.9723
+[train] step=370 loss=5.9469
+[train] step=380 loss=5.4196
+[train] step=390 loss=5.9933
+[train] step=400 loss=6.0567
+[train] step=410 loss=6.1267
+[train] step=420 loss=6.1619
+[train] step=430 loss=5.5055
+[train] step=440 loss=5.6084
+[train] step=450 loss=5.7403
+[train] step=460 loss=5.6285
+[train] step=470 loss=5.5848
+[train] step=480 loss=5.2025
+[train] step=490 loss=6.5255
+[train] step=500 loss=5.4309
+[train] step=510 loss=5.4156
+[train] step=520 loss=5.1767
+[train] step=530 loss=5.2886
+[train] step=540 loss=5.2492
+[train] step=550 loss=4.8709
+[train] step=560 loss=5.4265
+[train] step=570 loss=5.0386
+[train] step=580 loss=4.8647
+[train] step=590 loss=5.3462
+[train] step=600 loss=4.7781
+[train] step=610 loss=5.0525
+[train] step=620 loss=5.0765
+[train] step=630 loss=4.7597
+[train] step=640 loss=4.2862
+[train] step=650 loss=4.9176
+[train] step=660 loss=4.7236
+[train] step=670 loss=4.7658
+[train] step=680 loss=4.8034
+[train] step=690 loss=4.6715
+[train] step=700 loss=4.6848
+[train] step=710 loss=4.6483
+[train] step=720 loss=4.0062
+[train] step=730 loss=4.0432
+[train] step=740 loss=4.4662
+[train] step=750 loss=4.7065
+[train] step=760 loss=4.1700
+[train] step=770 loss=3.9100
+[train] step=780 loss=4.1579
+[train] step=790 loss=4.4896
+[train] step=800 loss=4.2562
+[train] step=810 loss=3.8675
+[train] step=820 loss=4.6078
+[train] step=830 loss=3.5711
+[train] step=840 loss=3.7828
+[train] step=850 loss=4.2460
+[train] step=860 loss=4.1816
+[train] step=870 loss=3.4566
+[train] step=880 loss=3.7134
+[train] step=890 loss=4.1073
+[train] step=900 loss=3.8509
+[train] step=910 loss=3.7208
+[train] step=920 loss=3.6474
+[train] step=930 loss=3.4807
+[train] step=940 loss=3.8227
+[train] step=950 loss=3.4067
+[train] step=960 loss=3.5817
+[train] step=970 loss=3.6734
+[train] step=980 loss=3.2724
+[train] step=990 loss=3.8771
+[train] step=1000 loss=2.8130
+{
+  "variant": "full",
+  "seed": 0,
+  "device": "cuda",
+  "dtype": "float32",
+  "block_size": 128,
+  "batch_size": 2,
+  "max_train_steps": 1000,
+  "parameter_count": 13220772,
+  "train_loss": 5.68714845085144,
+  "train_ppl": 295.05106730053524,
+  "train_tokens_per_second": 5271.721050457886,
+  "train_step_time_ms": 48.560991287231445,
+  "val_loss": 8.178483057022095,
+  "val_ppl": 3563.445015904887,
+  "eval_tokens_per_second": 29110.606887913484,
+  "eval_step_time_ms": 8.794045448303223,
+  "num_layers_with_stats": 2.0,
+  "mean_attention_trigger_rate": 0.425,
+  "mean_active_fraction": 0.8880859375,
+  "mean_halted_fraction": 0.1119140625,
+  "mean_halt_step": 1.909765625,
+  "mean_executed_steps": 2.0,
+  "mean_halt_step_by_position": [
+    1.9249999523162842,
+    1.9249999523162842,
+    1.9500000476837158,
+    1.875,
+    1.9249999523162842,
+    1.8250000476837158,
+    1.899999976158142,
+    1.850000023841858,
+    1.899999976158142,
+    1.875,
+    1.850000023841858,
+    1.9500000476837158,
+    1.875,
+    1.899999976158142,
+    1.875,
+    1.875,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.8250000476837158,
+    1.875,
+    1.9249999523162842,
+    1.875,
+    1.975000023841858,
+    1.899999976158142,
+    1.899999976158142,
+    1.9500000476837158,
+    1.850000023841858,
+    1.875,
+    1.899999976158142,
+    1.850000023841858,
+    1.8250000476837158,
+    1.975000023841858,
+    1.9500000476837158,
+    1.875,
+    1.975000023841858,
+    1.899999976158142,
+    1.9249999523162842,
+    1.899999976158142,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.875,
+    1.975000023841858,
+    1.7999999523162842,
+    1.899999976158142,
+    1.875,
+    1.7000000476837158,
+    1.850000023841858,
+    1.875,
+    1.774999976158142,
+    1.899999976158142,
+    1.9249999523162842,
+    1.8250000476837158,
+    1.899999976158142,
+    1.9249999523162842,
+    1.9500000476837158,
+    1.9500000476837158,
+    1.875,
+    2.0,
+    1.975000023841858,
+    1.975000023841858,
+    1.774999976158142,
+    1.9500000476837158,
+    1.9249999523162842,
+    1.899999976158142,
+    1.8250000476837158,
+    2.0,
+    1.899999976158142,
+    1.9500000476837158,
+    1.875,
+    1.9500000476837158,
+    1.899999976158142,
+    1.975000023841858,
+    1.850000023841858,
+    1.9249999523162842,
+    1.850000023841858,
+    1.850000023841858,
+    1.875,
+    2.0,
+    1.899999976158142,
+    1.9500000476837158,
+    1.9249999523162842,
+    1.899999976158142,
+    1.975000023841858,
+    1.975000023841858,
+    1.9500000476837158,
+    1.899999976158142,
+    1.9500000476837158,
+    1.9249999523162842,
+    1.899999976158142,
+    1.899999976158142,
+    1.899999976158142,
+    1.9249999523162842,
+    1.975000023841858,
+    1.9500000476837158,
+    1.9500000476837158,
+    1.975000023841858,
+    1.899999976158142,
+    1.975000023841858,
+    1.899999976158142,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.9500000476837158,
+    1.875,
+    1.899999976158142,
+    1.975000023841858,
+    1.899999976158142,
+    1.9249999523162842,
+    1.899999976158142,
+    1.9249999523162842,
+    1.899999976158142,
+    1.899999976158142,
+    1.9500000476837158,
+    1.975000023841858,
+    1.875,
+    1.899999976158142,
+    1.850000023841858,
+    1.9249999523162842,
+    2.0,
+    1.9249999523162842,
+    1.9500000476837158,
+    1.875,
+    1.975000023841858,
+    1.875,
+    1.9500000476837158,
+    1.975000023841858,
+    1.9249999523162842,
+    1.899999976158142
+  ],
+  "halted_fraction_by_position": [
+    0.07500000298023224,
+    0.07500000298023224,
+    0.05000000074505806,
+    0.125,
+    0.07500000298023224,
+    0.1875,
+    0.10000000149011612,
+    0.15000000596046448,
+    0.10000000149011612,
+    0.13750000298023224,
+    0.15000000596046448,
+    0.05000000074505806,
+    0.13750000298023224,
+    0.10000000149011612,
+    0.13750000298023224,
+    0.13750000298023224,
+    0.07500000298023224,
+    0.08749999850988388,
+    0.07500000298023224,
+    0.1875,
+    0.13750000298023224,
+    0.07500000298023224,
+    0.125,
+    0.03750000149011612,
+    0.10000000149011612,
+    0.125,
+    0.05000000074505806,
+    0.16249999403953552,
+    0.125,
+    0.125,
+    0.16249999403953552,
+    0.1875,
+    0.03750000149011612,
+    0.05000000074505806,
+    0.13750000298023224,
+    0.05000000074505806,
+    0.11249999701976776,
+    0.11249999701976776,
+    0.10000000149011612,
+    0.07500000298023224,
+    0.10000000149011612,
+    0.13750000298023224,
+    0.05000000074505806,
+    0.23749999701976776,
+    0.125,
+    0.13750000298023224,
+    0.30000001192092896,
+    0.17499999701976776,
+    0.1875,
+    0.2750000059604645,
+    0.125,
+    0.08749999850988388,
+    0.1875,
+    0.11249999701976776,
+    0.08749999850988388,
+    0.07500000298023224,
+    0.08749999850988388,
+    0.16249999403953552,
+    0.0,
+    0.08749999850988388,
+    0.02500000037252903,
+    0.25,
+    0.07500000298023224,
+    0.11249999701976776,
+    0.10000000149011612,
+    0.1875,
+    0.02500000037252903,
+    0.13750000298023224,
+    0.08749999850988388,
+    0.16249999403953552,
+    0.11249999701976776,
+    0.15000000596046448,
+    0.08749999850988388,
+    0.1875,
+    0.08749999850988388,
+    0.15000000596046448,
+    0.1875,
+    0.13750000298023224,
+    0.0,
+    0.125,
+    0.11249999701976776,
+    0.10000000149011612,
+    0.11249999701976776,
+    0.05000000074505806,
+    0.0625,
+    0.07500000298023224,
+    0.15000000596046448,
+    0.07500000298023224,
+    0.10000000149011612,
+    0.125,
+    0.13750000298023224,
+    0.125,
+    0.07500000298023224,
+    0.0625,
+    0.07500000298023224,
+    0.11249999701976776,
+    0.0625,
+    0.11249999701976776,
+    0.03750000149011612,
+    0.16249999403953552,
+    0.10000000149011612,
+    0.10000000149011612,
+    0.0625,
+    0.15000000596046448,
+    0.125,
+    0.08749999850988388,
+    0.125,
+    0.11249999701976776,
+    0.125,
+    0.11249999701976776,
+    0.11249999701976776,
+    0.15000000596046448,
+    0.0625,
+    0.05000000074505806,
+    0.16249999403953552,
+    0.125,
+    0.21250000596046448,
+    0.10000000149011612,
+    0.012500000186264515,
+    0.10000000149011612,
+    0.07500000298023224,
+    0.13750000298023224,
+    0.05000000074505806,
+    0.17499999701976776,
+    0.07500000298023224,
+    0.03750000149011612,
+    0.08749999850988388,
+    0.15000000596046448
+  ]
+}
+
+==> python train_wikitext103.py --variant plain --seed 1 --output-json results/routeB_plain_vs_full_1000step/wikitext103_plain_seed1.json --dataset-name wikitext --dataset-config wikitext-103-raw-v1 --tokenizer EleutherAI/gpt-neox-20b --device cuda --dtype float32 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --expand 2 --block-size 128 --batch-size 2 --eval-batch-size 2 --max-train-steps 1000 --max-eval-batches 10 --train-text-samples 500 --val-text-samples 200 --max-train-tokens 65536 --max-val-tokens 16384 --learning-rate 3e-4
+[train] step=10 loss=10.9051
+[train] step=20 loss=10.6258
+[train] step=30 loss=10.2408
+[train] step=40 loss=9.6440
+[train] step=50 loss=9.2223
+[train] step=60 loss=8.7101
+[train] step=70 loss=8.2658
+[train] step=80 loss=8.1929
+[train] step=90 loss=7.6760
+[train] step=100 loss=7.3873
+[train] step=110 loss=6.8736
+[train] step=120 loss=6.7854
+[train] step=130 loss=7.0487
+[train] step=140 loss=6.7647
+[train] step=150 loss=6.5988
+[train] step=160 loss=7.0069
+[train] step=170 loss=6.1279
+[train] step=180 loss=6.6291
+[train] step=190 loss=6.6967
+[train] step=200 loss=5.9524
+[train] step=210 loss=6.1090
+[train] step=220 loss=5.7766
+[train] step=230 loss=6.0265
+[train] step=240 loss=6.0297
+[train] step=250 loss=5.7275
+[train] step=260 loss=5.8663
+[train] step=270 loss=5.7623
+[train] step=280 loss=6.1308
+[train] step=290 loss=5.6092
+[train] step=300 loss=5.5236
+[train] step=310 loss=4.8069
+[train] step=320 loss=4.9884
+[train] step=330 loss=5.0018
+[train] step=340 loss=5.4765
+[train] step=350 loss=5.5174
+[train] step=360 loss=5.2155
+[train] step=370 loss=5.2620
+[train] step=380 loss=5.4903
+[train] step=390 loss=5.6637
+[train] step=400 loss=4.8847
+[train] step=410 loss=4.9004
+[train] step=420 loss=4.7478
+[train] step=430 loss=4.3401
+[train] step=440 loss=4.8649
+[train] step=450 loss=4.9586
+[train] step=460 loss=4.2475
+[train] step=470 loss=4.8386
+[train] step=480 loss=4.3884
+[train] step=490 loss=4.6904
+[train] step=500 loss=4.2663
+[train] step=510 loss=4.9447
+[train] step=520 loss=4.4411
+[train] step=530 loss=4.5133
+[train] step=540 loss=3.4357
+[train] step=550 loss=3.9041
+[train] step=560 loss=4.3175
+[train] step=570 loss=3.7805
+[train] step=580 loss=3.6747
+[train] step=590 loss=4.3836
+[train] step=600 loss=4.3455
+[train] step=610 loss=4.1358
+[train] step=620 loss=3.9098
+[train] step=630 loss=3.5014
+[train] step=640 loss=3.6589
+[train] step=650 loss=4.0977
+[train] step=660 loss=3.8086
+[train] step=670 loss=3.6954
+[train] step=680 loss=3.8480
+[train] step=690 loss=3.7234
+[train] step=700 loss=3.6028
+[train] step=710 loss=3.5555
+[train] step=720 loss=3.5038
+[train] step=730 loss=3.2278
+[train] step=740 loss=3.4173
+[train] step=750 loss=3.2334
+[train] step=760 loss=3.3928
+[train] step=770 loss=3.2431
+[train] step=780 loss=3.3532
+[train] step=790 loss=3.2425
+[train] step=800 loss=3.3755
+[train] step=810 loss=3.2426
+[train] step=820 loss=3.3256
+[train] step=830 loss=2.9230
+[train] step=840 loss=2.4867
+[train] step=850 loss=3.0768
+[train] step=860 loss=2.8641
+[train] step=870 loss=2.9694
+[train] step=880 loss=3.3352
+[train] step=890 loss=2.7748
+[train] step=900 loss=3.0111
+[train] step=910 loss=2.8112
+[train] step=920 loss=2.8747
+[train] step=930 loss=2.6985
+[train] step=940 loss=2.3938
+[train] step=950 loss=2.4363
+[train] step=960 loss=2.6184
+[train] step=970 loss=2.6858
+[train] step=980 loss=2.5809
+[train] step=990 loss=2.5447
+[train] step=1000 loss=2.2210
+{
+  "variant": "plain",
+  "seed": 1,
+  "device": "cuda",
+  "dtype": "float32",
+  "block_size": 128,
+  "batch_size": 2,
+  "max_train_steps": 1000,
+  "parameter_count": 13088160,
+  "train_loss": 4.866694887399674,
+  "train_ppl": 129.89090260621077,
+  "train_tokens_per_second": 6772.7979856059965,
+  "train_step_time_ms": 37.79826307296753,
+  "val_loss": 8.440633630752563,
+  "val_ppl": 4631.488708687618,
+  "eval_tokens_per_second": 86224.23885199432,
+  "eval_step_time_ms": 2.9690027236938477
+}
+
+==> python train_wikitext103.py --variant full --halt-threshold 0.7 --router-threshold 0.5 --router-temperature 1.0 --seed 1 --output-json results/routeB_plain_vs_full_1000step/wikitext103_full_h07_seed1.json --dataset-name wikitext --dataset-config wikitext-103-raw-v1 --tokenizer EleutherAI/gpt-neox-20b --device cuda --dtype float32 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --expand 2 --block-size 128 --batch-size 2 --eval-batch-size 2 --max-train-steps 1000 --max-eval-batches 10 --train-text-samples 500 --val-text-samples 200 --max-train-tokens 65536 --max-val-tokens 16384 --learning-rate 3e-4
+[train] step=10 loss=10.9382
+[train] step=20 loss=10.8054
+[train] step=30 loss=10.4055
+[train] step=40 loss=9.9720
+[train] step=50 loss=9.4044
+[train] step=60 loss=9.0089
+[train] step=70 loss=8.5257
+[train] step=80 loss=8.3876
+[train] step=90 loss=8.0094
+[train] step=100 loss=7.6158
+[train] step=110 loss=7.1913
+[train] step=120 loss=7.0182
+[train] step=130 loss=7.2843
+[train] step=140 loss=7.1751
+[train] step=150 loss=6.9207
+[train] step=160 loss=7.3558
+[train] step=170 loss=6.7265
+[train] step=180 loss=7.0805
+[train] step=190 loss=7.3146
+[train] step=200 loss=6.5423
+[train] step=210 loss=6.6775
+[train] step=220 loss=6.7098
+[train] step=230 loss=6.8390
+[train] step=240 loss=6.6642
+[train] step=250 loss=6.4600
+[train] step=260 loss=6.6784
+[train] step=270 loss=6.4196
+[train] step=280 loss=6.8352
+[train] step=290 loss=6.5213
+[train] step=300 loss=6.3383
+[train] step=310 loss=5.9945
+[train] step=320 loss=5.9391
+[train] step=330 loss=6.1836
+[train] step=340 loss=6.4872
+[train] step=350 loss=6.3752
+[train] step=360 loss=6.1781
+[train] step=370 loss=6.1937
+[train] step=380 loss=6.3645
+[train] step=390 loss=6.7507
+[train] step=400 loss=5.7571
+[train] step=410 loss=5.6686
+[train] step=420 loss=5.7088
+[train] step=430 loss=5.4794
+[train] step=440 loss=5.9306
+[train] step=450 loss=5.9591
+[train] step=460 loss=5.3929
+[train] step=470 loss=5.8996
+[train] step=480 loss=5.4240
+[train] step=490 loss=5.6624
+[train] step=500 loss=5.2903
+[train] step=510 loss=5.8500
+[train] step=520 loss=5.4774
+[train] step=530 loss=5.5965
+[train] step=540 loss=4.4067
+[train] step=550 loss=4.9257
+[train] step=560 loss=5.2624
+[train] step=570 loss=4.9360
+[train] step=580 loss=4.7267
+[train] step=590 loss=5.3300
+[train] step=600 loss=5.3464
+[train] step=610 loss=5.1270
+[train] step=620 loss=4.9459
+[train] step=630 loss=4.4814
+[train] step=640 loss=4.8099
+[train] step=650 loss=5.1409
+[train] step=660 loss=4.8921
+[train] step=670 loss=4.7390
+[train] step=680 loss=4.9363
+[train] step=690 loss=5.0407
+[train] step=700 loss=4.7514
+[train] step=710 loss=4.3943
+[train] step=720 loss=4.5969
+[train] step=730 loss=4.2190
+[train] step=740 loss=4.3302
+[train] step=750 loss=4.1847
+[train] step=760 loss=4.3059
+[train] step=770 loss=4.2890
+[train] step=780 loss=4.3934
+[train] step=790 loss=4.1179
+[train] step=800 loss=4.3614
+[train] step=810 loss=4.3441
+[train] step=820 loss=4.3774
+[train] step=830 loss=3.7017
+[train] step=840 loss=3.4995
+[train] step=850 loss=4.2813
+[train] step=860 loss=3.9602
+[train] step=870 loss=3.8698
+[train] step=880 loss=4.4560
+[train] step=890 loss=3.6283
+[train] step=900 loss=4.0651
+[train] step=910 loss=3.9011
+[train] step=920 loss=3.7533
+[train] step=930 loss=3.6785
+[train] step=940 loss=3.5938
+[train] step=950 loss=3.4975
+[train] step=960 loss=3.6792
+[train] step=970 loss=3.8389
+[train] step=980 loss=3.6146
+[train] step=990 loss=3.4166
+[train] step=1000 loss=3.3330
+{
+  "variant": "full",
+  "seed": 1,
+  "device": "cuda",
+  "dtype": "float32",
+  "block_size": 128,
+  "batch_size": 2,
+  "max_train_steps": 1000,
+  "parameter_count": 13220772,
+  "train_loss": 5.7065778195858,
+  "train_ppl": 300.8397766647695,
+  "train_tokens_per_second": 4976.389967745749,
+  "train_step_time_ms": 51.44291377067566,
+  "val_loss": 8.317321872711181,
+  "val_ppl": 4094.180575952097,
+  "eval_tokens_per_second": 27567.821182004205,
+  "eval_step_time_ms": 9.286189079284668,
+  "num_layers_with_stats": 2.0,
+  "mean_attention_trigger_rate": 0.475,
+  "mean_active_fraction": 0.84384765625,
+  "mean_halted_fraction": 0.15615234375,
+  "mean_halt_step": 1.8599609375,
+  "mean_executed_steps": 2.0,
+  "mean_halt_step_by_position": [
+    1.774999976158142,
+    1.725000023841858,
+    1.75,
+    1.8250000476837158,
+    1.774999976158142,
+    1.75,
+    1.8250000476837158,
+    1.8250000476837158,
+    1.774999976158142,
+    1.8250000476837158,
+    1.7999999523162842,
+    1.8250000476837158,
+    1.7999999523162842,
+    1.9249999523162842,
+    1.850000023841858,
+    1.850000023841858,
+    1.9249999523162842,
+    1.774999976158142,
+    1.8250000476837158,
+    1.875,
+    1.850000023841858,
+    1.850000023841858,
+    1.8250000476837158,
+    1.899999976158142,
+    1.899999976158142,
+    1.850000023841858,
+    1.9249999523162842,
+    1.875,
+    1.774999976158142,
+    1.7999999523162842,
+    1.975000023841858,
+    1.850000023841858,
+    1.8250000476837158,
+    1.899999976158142,
+    1.8250000476837158,
+    1.9500000476837158,
+    1.774999976158142,
+    1.774999976158142,
+    1.7999999523162842,
+    1.8250000476837158,
+    1.850000023841858,
+    1.7999999523162842,
+    1.850000023841858,
+    1.875,
+    1.9500000476837158,
+    1.899999976158142,
+    1.8250000476837158,
+    1.875,
+    1.899999976158142,
+    1.9249999523162842,
+    1.975000023841858,
+    1.875,
+    1.850000023841858,
+    1.8250000476837158,
+    1.899999976158142,
+    1.8250000476837158,
+    1.850000023841858,
+    1.875,
+    1.7999999523162842,
+    1.899999976158142,
+    1.899999976158142,
+    1.850000023841858,
+    1.850000023841858,
+    1.8250000476837158,
+    1.875,
+    1.9500000476837158,
+    1.9249999523162842,
+    1.899999976158142,
+    1.8250000476837158,
+    1.899999976158142,
+    1.8250000476837158,
+    1.850000023841858,
+    1.899999976158142,
+    1.8250000476837158,
+    1.9249999523162842,
+    1.899999976158142,
+    1.9249999523162842,
+    1.875,
+    1.875,
+    1.875,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.899999976158142,
+    1.899999976158142,
+    1.774999976158142,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.899999976158142,
+    1.875,
+    1.850000023841858,
+    1.899999976158142,
+    1.9249999523162842,
+    1.850000023841858,
+    1.899999976158142,
+    1.875,
+    1.899999976158142,
+    1.774999976158142,
+    1.8250000476837158,
+    1.850000023841858,
+    1.899999976158142,
+    1.875,
+    1.850000023841858,
+    1.899999976158142,
+    1.899999976158142,
+    1.875,
+    1.875,
+    1.875,
+    1.875,
+    1.875,
+    1.8250000476837158,
+    1.9500000476837158,
+    1.8250000476837158,
+    1.850000023841858,
+    1.9249999523162842,
+    1.850000023841858,
+    1.899999976158142,
+    1.8250000476837158,
+    1.75,
+    1.850000023841858,
+    1.7999999523162842,
+    1.875,
+    1.774999976158142,
+    1.774999976158142,
+    1.875,
+    1.975000023841858,
+    1.899999976158142,
+    1.850000023841858,
+    1.850000023841858
+  ],
+  "halted_fraction_by_position": [
+    0.22499999403953552,
+    0.2750000059604645,
+    0.26249998807907104,
+    0.17499999701976776,
+    0.23749999701976776,
+    0.25,
+    0.20000000298023224,
+    0.1875,
+    0.25,
+    0.17499999701976776,
+    0.20000000298023224,
+    0.17499999701976776,
+    0.23749999701976776,
+    0.07500000298023224,
+    0.1875,
+    0.17499999701976776,
+    0.07500000298023224,
+    0.22499999403953552,
+    0.17499999701976776,
+    0.13750000298023224,
+    0.1875,
+    0.16249999403953552,
+    0.1875,
+    0.10000000149011612,
+    0.125,
+    0.15000000596046448,
+    0.07500000298023224,
+    0.125,
+    0.23749999701976776,
+    0.21250000596046448,
+    0.02500000037252903,
+    0.16249999403953552,
+    0.1875,
+    0.10000000149011612,
+    0.21250000596046448,
+    0.0625,
+    0.25,
+    0.22499999403953552,
+    0.22499999403953552,
+    0.21250000596046448,
+    0.16249999403953552,
+    0.2750000059604645,
+    0.16249999403953552,
+    0.13750000298023224,
+    0.05000000074505806,
+    0.125,
+    0.17499999701976776,
+    0.13750000298023224,
+    0.125,
+    0.07500000298023224,
+    0.0625,
+    0.16249999403953552,
+    0.17499999701976776,
+    0.17499999701976776,
+    0.11249999701976776,
+    0.1875,
+    0.17499999701976776,
+    0.13750000298023224,
+    0.20000000298023224,
+    0.11249999701976776,
+    0.125,
+    0.21250000596046448,
+    0.1875,
+    0.1875,
+    0.125,
+    0.05000000074505806,
+    0.10000000149011612,
+    0.11249999701976776,
+    0.1875,
+    0.10000000149011612,
+    0.22499999403953552,
+    0.17499999701976776,
+    0.10000000149011612,
+    0.1875,
+    0.07500000298023224,
+    0.10000000149011612,
+    0.08749999850988388,
+    0.13750000298023224,
+    0.15000000596046448,
+    0.13750000298023224,
+    0.10000000149011612,
+    0.10000000149011612,
+    0.125,
+    0.10000000149011612,
+    0.23749999701976776,
+    0.07500000298023224,
+    0.07500000298023224,
+    0.10000000149011612,
+    0.13750000298023224,
+    0.17499999701976776,
+    0.10000000149011612,
+    0.10000000149011612,
+    0.17499999701976776,
+    0.11249999701976776,
+    0.125,
+    0.125,
+    0.23749999701976776,
+    0.17499999701976776,
+    0.1875,
+    0.11249999701976776,
+    0.20000000298023224,
+    0.16249999403953552,
+    0.11249999701976776,
+    0.10000000149011612,
+    0.13750000298023224,
+    0.125,
+    0.16249999403953552,
+    0.16249999403953552,
+    0.15000000596046448,
+    0.1875,
+    0.05000000074505806,
+    0.17499999701976776,
+    0.15000000596046448,
+    0.11249999701976776,
+    0.17499999701976776,
+    0.15000000596046448,
+    0.21250000596046448,
+    0.26249998807907104,
+    0.17499999701976776,
+    0.20000000298023224,
+    0.125,
+    0.25,
+    0.23749999701976776,
+    0.17499999701976776,
+    0.07500000298023224,
+    0.13750000298023224,
+    0.16249999403953552,
+    0.17499999701976776
+  ]
+}
+
+==> python train_wikitext103.py --variant plain --seed 2 --output-json results/routeB_plain_vs_full_1000step/wikitext103_plain_seed2.json --dataset-name wikitext --dataset-config wikitext-103-raw-v1 --tokenizer EleutherAI/gpt-neox-20b --device cuda --dtype float32 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --expand 2 --block-size 128 --batch-size 2 --eval-batch-size 2 --max-train-steps 1000 --max-eval-batches 10 --train-text-samples 500 --val-text-samples 200 --max-train-tokens 65536 --max-val-tokens 16384 --learning-rate 3e-4
+[train] step=10 loss=10.6920
+[train] step=20 loss=10.6535
+[train] step=30 loss=10.4556
+[train] step=40 loss=10.0794
+[train] step=50 loss=9.5640
+[train] step=60 loss=8.5304
+[train] step=70 loss=8.3579
+[train] step=80 loss=8.0626
+[train] step=90 loss=7.9765
+[train] step=100 loss=7.6154
+[train] step=110 loss=6.9985
+[train] step=120 loss=6.4659
+[train] step=130 loss=6.7226
+[train] step=140 loss=6.4694
+[train] step=150 loss=6.3175
+[train] step=160 loss=6.7072
+[train] step=170 loss=6.6263
+[train] step=180 loss=5.9850
+[train] step=190 loss=6.4290
+[train] step=200 loss=6.2282
+[train] step=210 loss=5.9522
+[train] step=220 loss=5.7498
+[train] step=230 loss=5.9187
+[train] step=240 loss=6.0812
+[train] step=250 loss=6.1519
+[train] step=260 loss=5.5569
+[train] step=270 loss=5.7647
+[train] step=280 loss=6.0286
+[train] step=290 loss=5.2302
+[train] step=300 loss=5.4722
+[train] step=310 loss=5.5645
+[train] step=320 loss=5.7199
+[train] step=330 loss=5.2853
+[train] step=340 loss=5.2069
+[train] step=350 loss=5.3168
+[train] step=360 loss=4.8486
+[train] step=370 loss=5.1545
+[train] step=380 loss=5.1619
+[train] step=390 loss=4.7637
+[train] step=400 loss=4.9531
+[train] step=410 loss=5.2338
+[train] step=420 loss=4.7869
+[train] step=430 loss=4.1271
+[train] step=440 loss=4.3421
+[train] step=450 loss=4.7217
+[train] step=460 loss=4.2001
+[train] step=470 loss=4.1097
+[train] step=480 loss=4.7710
+[train] step=490 loss=4.9459
+[train] step=500 loss=4.6066
+[train] step=510 loss=4.5194
+[train] step=520 loss=4.4043
+[train] step=530 loss=4.1498
+[train] step=540 loss=3.8731
+[train] step=550 loss=4.0791
+[train] step=560 loss=4.1271
+[train] step=570 loss=4.2025
+[train] step=580 loss=4.3827
+[train] step=590 loss=4.1161
+[train] step=600 loss=4.2688
+[train] step=610 loss=4.5305
+[train] step=620 loss=3.2215
+[train] step=630 loss=4.0684
+[train] step=640 loss=3.6339
+[train] step=650 loss=3.5294
+[train] step=660 loss=3.7236
+[train] step=670 loss=3.6585
+[train] step=680 loss=3.8174
+[train] step=690 loss=3.7007
+[train] step=700 loss=3.2387
+[train] step=710 loss=3.7942
+[train] step=720 loss=3.4065
+[train] step=730 loss=3.5102
+[train] step=740 loss=3.2362
+[train] step=750 loss=3.2610
+[train] step=760 loss=3.1305
+[train] step=770 loss=3.3198
+[train] step=780 loss=3.0245
+[train] step=790 loss=3.2090
+[train] step=800 loss=3.3567
+[train] step=810 loss=3.5301
+[train] step=820 loss=3.3392
+[train] step=830 loss=2.8356
+[train] step=840 loss=2.8461
+[train] step=850 loss=2.9657
+[train] step=860 loss=3.0485
+[train] step=870 loss=2.6784
+[train] step=880 loss=2.8548
+[train] step=890 loss=2.4325
+[train] step=900 loss=2.5678
+[train] step=910 loss=3.0618
+[train] step=920 loss=2.6441
+[train] step=930 loss=2.5739
+[train] step=940 loss=2.5316
+[train] step=950 loss=2.7199
+[train] step=960 loss=2.3412
+[train] step=970 loss=2.6296
+[train] step=980 loss=2.2430
+[train] step=990 loss=2.3990
+[train] step=1000 loss=2.5722
+{
+  "variant": "plain",
+  "seed": 2,
+  "device": "cuda",
+  "dtype": "float32",
+  "block_size": 128,
+  "batch_size": 2,
+  "max_train_steps": 1000,
+  "parameter_count": 13088160,
+  "train_loss": 4.860023655653,
+  "train_ppl": 129.02725429523252,
+  "train_tokens_per_second": 6843.334520391374,
+  "train_step_time_ms": 37.408663749694824,
+  "val_loss": 8.547471904754639,
+  "val_ppl": 5153.708877019492,
+  "eval_tokens_per_second": 77316.5863072093,
+  "eval_step_time_ms": 3.3110618591308594
+}
+
+==> python train_wikitext103.py --variant full --halt-threshold 0.7 --router-threshold 0.5 --router-temperature 1.0 --seed 2 --output-json results/routeB_plain_vs_full_1000step/wikitext103_full_h07_seed2.json --dataset-name wikitext --dataset-config wikitext-103-raw-v1 --tokenizer EleutherAI/gpt-neox-20b --device cuda --dtype float32 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --expand 2 --block-size 128 --batch-size 2 --eval-batch-size 2 --max-train-steps 1000 --max-eval-batches 10 --train-text-samples 500 --val-text-samples 200 --max-train-tokens 65536 --max-val-tokens 16384 --learning-rate 3e-4
+[train] step=10 loss=10.8912
+[train] step=20 loss=10.8768
+[train] step=30 loss=10.5380
+[train] step=40 loss=9.9310
+[train] step=50 loss=9.5705
+[train] step=60 loss=8.7868
+[train] step=70 loss=8.4869
+[train] step=80 loss=8.1549
+[train] step=90 loss=8.1838
+[train] step=100 loss=7.8738
+[train] step=110 loss=7.1541
+[train] step=120 loss=6.9931
+[train] step=130 loss=7.0683
+[train] step=140 loss=6.7577
+[train] step=150 loss=6.6167
+[train] step=160 loss=6.9725
+[train] step=170 loss=6.8964
+[train] step=180 loss=6.3273
+[train] step=190 loss=6.8669
+[train] step=200 loss=6.7256
+[train] step=210 loss=6.4206
+[train] step=220 loss=6.4125
+[train] step=230 loss=6.4929
+[train] step=240 loss=6.6876
+[train] step=250 loss=6.6997
+[train] step=260 loss=6.1711
+[train] step=270 loss=6.3342
+[train] step=280 loss=6.5256
+[train] step=290 loss=5.8252
+[train] step=300 loss=6.1109
+[train] step=310 loss=6.3504
+[train] step=320 loss=6.5085
+[train] step=330 loss=6.1396
+[train] step=340 loss=5.9237
+[train] step=350 loss=5.9399
+[train] step=360 loss=5.7111
+[train] step=370 loss=6.0310
+[train] step=380 loss=5.9885
+[train] step=390 loss=5.6474
+[train] step=400 loss=5.7289
+[train] step=410 loss=5.9294
+[train] step=420 loss=5.8024
+[train] step=430 loss=5.1559
+[train] step=440 loss=5.3014
+[train] step=450 loss=5.7097
+[train] step=460 loss=5.1287
+[train] step=470 loss=5.0898
+[train] step=480 loss=5.6473
+[train] step=490 loss=5.8461
+[train] step=500 loss=5.5196
+[train] step=510 loss=5.3589
+[train] step=520 loss=5.6476
+[train] step=530 loss=5.1573
+[train] step=540 loss=5.0053
+[train] step=550 loss=5.0875
+[train] step=560 loss=4.9546
+[train] step=570 loss=5.1973
+[train] step=580 loss=5.4378
+[train] step=590 loss=5.1771
+[train] step=600 loss=5.2620
+[train] step=610 loss=5.7588
+[train] step=620 loss=4.3356
+[train] step=630 loss=5.0927
+[train] step=640 loss=4.7523
+[train] step=650 loss=4.6051
+[train] step=660 loss=4.7530
+[train] step=670 loss=4.7189
+[train] step=680 loss=5.0670
+[train] step=690 loss=4.9120
+[train] step=700 loss=4.2127
+[train] step=710 loss=4.9282
+[train] step=720 loss=4.3324
+[train] step=730 loss=4.6711
+[train] step=740 loss=4.2378
+[train] step=750 loss=4.5278
+[train] step=760 loss=4.0900
+[train] step=770 loss=4.3538
+[train] step=780 loss=4.2994
+[train] step=790 loss=4.1389
+[train] step=800 loss=4.2409
+[train] step=810 loss=4.8104
+[train] step=820 loss=4.4570
+[train] step=830 loss=4.0159
+[train] step=840 loss=4.0414
+[train] step=850 loss=4.0670
+[train] step=860 loss=4.1268
+[train] step=870 loss=3.7526
+[train] step=880 loss=4.0062
+[train] step=890 loss=3.3312
+[train] step=900 loss=3.5524
+[train] step=910 loss=4.2288
+[train] step=920 loss=4.0559
+[train] step=930 loss=3.9164
+[train] step=940 loss=3.8210
+[train] step=950 loss=3.8333
+[train] step=960 loss=3.5116
+[train] step=970 loss=3.9095
+[train] step=980 loss=3.5258
+[train] step=990 loss=3.6238
+[train] step=1000 loss=3.6966
+{
+  "variant": "full",
+  "seed": 2,
+  "device": "cuda",
+  "dtype": "float32",
+  "block_size": 128,
+  "batch_size": 2,
+  "max_train_steps": 1000,
+  "parameter_count": 13220772,
+  "train_loss": 5.692666189193726,
+  "train_ppl": 296.68358163910955,
+  "train_tokens_per_second": 5122.402933863772,
+  "train_step_time_ms": 49.97654485702515,
+  "val_loss": 8.467538547515868,
+  "val_ppl": 4757.789970590544,
+  "eval_tokens_per_second": 30369.866753404705,
+  "eval_step_time_ms": 8.429408073425293,
+  "num_layers_with_stats": 2.0,
+  "mean_attention_trigger_rate": 0.175,
+  "mean_active_fraction": 0.94072265625,
+  "mean_halted_fraction": 0.05927734375,
+  "mean_halt_step": 1.957421875,
+  "mean_executed_steps": 2.0,
+  "mean_halt_step_by_position": [
+    1.975000023841858,
+    2.0,
+    1.975000023841858,
+    2.0,
+    1.9500000476837158,
+    1.9500000476837158,
+    1.975000023841858,
+    1.975000023841858,
+    1.975000023841858,
+    1.9500000476837158,
+    1.975000023841858,
+    1.9500000476837158,
+    1.899999976158142,
+    2.0,
+    1.9500000476837158,
+    1.9500000476837158,
+    1.975000023841858,
+    2.0,
+    1.9249999523162842,
+    1.975000023841858,
+    1.975000023841858,
+    2.0,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.975000023841858,
+    1.9500000476837158,
+    1.975000023841858,
+    1.9500000476837158,
+    1.899999976158142,
+    1.9500000476837158,
+    1.9249999523162842,
+    1.9500000476837158,
+    1.975000023841858,
+    2.0,
+    1.975000023841858,
+    2.0,
+    1.9249999523162842,
+    1.9500000476837158,
+    1.975000023841858,
+    1.975000023841858,
+    1.9500000476837158,
+    1.975000023841858,
+    1.9249999523162842,
+    1.975000023841858,
+    1.9500000476837158,
+    1.875,
+    1.975000023841858,
+    1.9249999523162842,
+    1.9500000476837158,
+    1.9500000476837158,
+    1.975000023841858,
+    1.975000023841858,
+    1.975000023841858,
+    1.975000023841858,
+    2.0,
+    1.9249999523162842,
+    1.975000023841858,
+    1.9500000476837158,
+    1.975000023841858,
+    1.899999976158142,
+    1.975000023841858,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.975000023841858,
+    1.975000023841858,
+    2.0,
+    1.9500000476837158,
+    1.9500000476837158,
+    1.9500000476837158,
+    1.975000023841858,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.9249999523162842,
+    1.9500000476837158,
+    1.899999976158142,
+    1.975000023841858,
+    2.0,
+    1.975000023841858,
+    1.899999976158142,
+    1.975000023841858,
+    1.9500000476837158,
+    1.975000023841858,
+    1.9500000476837158,
+    1.9249999523162842,
+    1.975000023841858,
+    2.0,
+    1.9500000476837158,
+    1.899999976158142,
+    1.9500000476837158,
+    1.9500000476837158,
+    2.0,
+    2.0,
+    1.975000023841858,
+    1.9500000476837158,
+    2.0,
+    1.9249999523162842,
+    1.975000023841858,
+    2.0,
+    1.875,
+    1.9500000476837158,
+    2.0,
+    1.9500000476837158,
+    1.975000023841858,
+    1.9500000476837158,
+    1.899999976158142,
+    1.9249999523162842,
+    1.9500000476837158,
+    1.9249999523162842,
+    1.975000023841858,
+    2.0,
+    1.975000023841858,
+    1.899999976158142,
+    1.9500000476837158,
+    1.975000023841858,
+    2.0,
+    2.0,
+    1.975000023841858,
+    1.9500000476837158,
+    1.899999976158142,
+    1.9500000476837158,
+    2.0,
+    1.975000023841858,
+    1.899999976158142,
+    1.9500000476837158,
+    1.975000023841858,
+    1.9500000476837158,
+    1.975000023841858,
+    1.899999976158142
+  ],
+  "halted_fraction_by_position": [
+    0.02500000037252903,
+    0.0,
+    0.02500000037252903,
+    0.0,
+    0.05000000074505806,
+    0.05000000074505806,
+    0.02500000037252903,
+    0.02500000037252903,
+    0.02500000037252903,
+    0.05000000074505806,
+    0.03750000149011612,
+    0.08749999850988388,
+    0.10000000149011612,
+    0.012500000186264515,
+    0.05000000074505806,
+    0.0625,
+    0.02500000037252903,
+    0.0,
+    0.08749999850988388,
+    0.03750000149011612,
+    0.02500000037252903,
+    0.0,
+    0.07500000298023224,
+    0.08749999850988388,
+    0.02500000037252903,
+    0.0625,
+    0.05000000074505806,
+    0.07500000298023224,
+    0.125,
+    0.0625,
+    0.08749999850988388,
+    0.05000000074505806,
+    0.03750000149011612,
+    0.0,
+    0.03750000149011612,
+    0.02500000037252903,
+    0.10000000149011612,
+    0.0625,
+    0.03750000149011612,
+    0.05000000074505806,
+    0.0625,
+    0.02500000037252903,
+    0.11249999701976776,
+    0.03750000149011612,
+    0.05000000074505806,
+    0.125,
+    0.05000000074505806,
+    0.07500000298023224,
+    0.07500000298023224,
+    0.08749999850988388,
+    0.0625,
+    0.02500000037252903,
+    0.02500000037252903,
+    0.03750000149011612,
+    0.012500000186264515,
+    0.10000000149011612,
+    0.03750000149011612,
+    0.07500000298023224,
+    0.03750000149011612,
+    0.10000000149011612,
+    0.0625,
+    0.125,
+    0.07500000298023224,
+    0.0625,
+    0.0625,
+    0.0,
+    0.07500000298023224,
+    0.0625,
+    0.05000000074505806,
+    0.02500000037252903,
+    0.08749999850988388,
+    0.08749999850988388,
+    0.07500000298023224,
+    0.08749999850988388,
+    0.16249999403953552,
+    0.03750000149011612,
+    0.012500000186264515,
+    0.03750000149011612,
+    0.125,
+    0.05000000074505806,
+    0.08749999850988388,
+    0.03750000149011612,
+    0.0625,
+    0.10000000149011612,
+    0.03750000149011612,
+    0.02500000037252903,
+    0.07500000298023224,
+    0.11249999701976776,
+    0.0625,
+    0.0625,
+    0.02500000037252903,
+    0.02500000037252903,
+    0.03750000149011612,
+    0.0625,
+    0.012500000186264515,
+    0.10000000149011612,
+    0.03750000149011612,
+    0.03750000149011612,
+    0.16249999403953552,
+    0.08749999850988388,
+    0.012500000186264515,
+    0.08749999850988388,
+    0.05000000074505806,
+    0.0625,
+    0.11249999701976776,
+    0.08749999850988388,
+    0.0625,
+    0.10000000149011612,
+    0.05000000074505806,
+    0.03750000149011612,
+    0.03750000149011612,
+    0.11249999701976776,
+    0.08749999850988388,
+    0.03750000149011612,
+    0.03750000149011612,
+    0.012500000186264515,
+    0.08749999850988388,
+    0.10000000149011612,
+    0.11249999701976776,
+    0.08749999850988388,
+    0.012500000186264515,
+    0.05000000074505806,
+    0.125,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.05000000074505806,
+    0.11249999701976776
+  ]
+}

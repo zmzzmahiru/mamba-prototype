@@ -1,0 +1,18 @@
+{
+  "variant": "plain",
+  "seed": 1,
+  "device": "cuda",
+  "dtype": "float32",
+  "block_size": 128,
+  "batch_size": 2,
+  "max_train_steps": 200,
+  "parameter_count": 13088160,
+  "train_loss": 7.928143486976624,
+  "train_ppl": 2774.2715493367596,
+  "train_tokens_per_second": 1735.9280261865463,
+  "train_step_time_ms": 147.4715518951416,
+  "val_loss": 7.790444374084473,
+  "val_ppl": 2417.391569716847,
+  "eval_tokens_per_second": 86877.23608942254,
+  "eval_step_time_ms": 2.9466867446899414
+}
