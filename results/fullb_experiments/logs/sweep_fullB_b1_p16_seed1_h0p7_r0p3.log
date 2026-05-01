@@ -1,0 +1,22 @@
+$ .venv/bin/python benchmarks/benchmark_generation_mamba_simple.py --prototype --batch 1 --promptlen 16 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --repeats 20 --dtype float16 --variant full --seed 1 --halt-threshold 0.7 --router-threshold 0.3 --output-json results/fullb_experiments/sweep_fullB_b1_p16_seed1_h0p7_r0p3.json
+Running local Mamba3 full-sequence benchmark (full)
+Number of parameters: 617892
+Input shape: (1, 16)
+Logits shape: (1, 16, 1024)
+Average forward time: 10ms
+Benchmark tokens/sec: 1570.98
+Peak GPU memory allocated: 11.45 MiB
+Prototype stats:
+  num_layers_with_stats: 2
+  mean_executed_steps: 2.0
+  mean_attention_trigger_rate: 1.0
+  mean_active_fraction: 0.90625
+  mean_halted_fraction: 0.09375
+  mean_halt_step: 1.90625
+  router_probs_first_layer: [0.5, 0.49951171875]
+  active_fractions_first_layer: [0.8125, 0.8125]
+  halted_fractions_first_layer: [0.1875, 0.1875]
+Output drift vs plain Mamba3:
+  logit_l2_vs_plain_mamba3: 104.77407836914062
+  logit_mae_vs_plain_mamba3: 0.6542505025863647
+Wrote results/fullb_experiments/sweep_fullB_b1_p16_seed1_h0p7_r0p3.json

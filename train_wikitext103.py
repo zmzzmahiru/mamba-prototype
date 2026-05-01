@@ -1,6 +1,7 @@
 import argparse
 import json
 import math
+import sys
 import time
 from pathlib import Path
 
@@ -211,6 +212,7 @@ def evaluate(model, dataloader, device, max_eval_batches=None):
 
 
 def train(args):
+    run_start = time.time()
     device_name = args.device
     if device_name == "cuda" and not torch.cuda.is_available():
         device_name = "cpu"
@@ -261,6 +263,11 @@ def train(args):
             print(f"[train] step={step} loss={loss.item():.4f}")
 
     elapsed = max(time.time() - start, 1e-6)
+    peak_gpu_memory_mb = (
+        torch.cuda.max_memory_allocated(device) / (1024**2)
+        if device.type == "cuda"
+        else None
+    )
     train_metrics = {
         "train_loss": train_loss_sum / max(train_steps, 1),
         "train_ppl": math.exp(train_loss_sum / max(train_steps, 1)),
@@ -272,11 +279,21 @@ def train(args):
     results = {
         "variant": args.variant,
         "seed": args.seed,
+        "command": " ".join(sys.argv),
         "device": device.type,
+        "device_name": torch.cuda.get_device_name(device) if device.type == "cuda" else "cpu",
         "dtype": args.dtype,
+        "d_model": args.d_model,
+        "n_layer": args.n_layer,
+        "d_state": args.d_state,
+        "headdim": args.headdim,
         "block_size": args.block_size,
         "batch_size": args.batch_size,
         "max_train_steps": args.max_train_steps,
+        "halting_threshold": args.halt_threshold,
+        "router_threshold": 0.0 if args.variant == "always_attention" else args.router_threshold,
+        "wall_clock_runtime_seconds": time.time() - run_start,
+        "peak_gpu_memory_mb": peak_gpu_memory_mb,
         "parameter_count": sum(p.numel() for p in model.parameters() if p.requires_grad),
         **train_metrics,
         **eval_metrics,

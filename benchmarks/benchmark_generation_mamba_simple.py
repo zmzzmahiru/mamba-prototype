@@ -1,7 +1,10 @@
 # Copyright (c) 2023, Tri Dao, Albert Gu.
 
 import argparse
+import json
+import sys
 import time
+from pathlib import Path
 
 import torch
 import torch.nn.functional as F
@@ -120,6 +123,7 @@ def collect_prototype_stats(model):
 
 def run_local_benchmark(args, device, dtype):
     print(f"Running local Mamba3 full-sequence benchmark ({args.variant})")
+    run_start = time.time()
     torch.manual_seed(args.seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(args.seed)
@@ -138,16 +142,27 @@ def run_local_benchmark(args, device, dtype):
     logits = fn()
     if device.type == "cuda":
         torch.cuda.synchronize(device)
+        torch.cuda.reset_peak_memory_stats(device)
     start = time.time()
     for _ in range(args.repeats):
         logits = fn()
     if device.type == "cuda":
         torch.cuda.synchronize(device)
-    avg_ms = (time.time() - start) / args.repeats * 1000
+    elapsed = time.time() - start
+    avg_ms = elapsed / args.repeats * 1000
+    benchmark_tokens_per_second = args.batch * args.promptlen * args.repeats / max(elapsed, 1e-6)
+    peak_gpu_memory_mb = (
+        torch.cuda.max_memory_allocated(device) / (1024**2)
+        if device.type == "cuda"
+        else None
+    )
 
     print(f"Input shape: {tuple(input_ids.shape)}")
     print(f"Logits shape: {tuple(logits.shape)}")
     print(f"Average forward time: {avg_ms:.0f}ms")
+    print(f"Benchmark tokens/sec: {benchmark_tokens_per_second:.2f}")
+    if peak_gpu_memory_mb is not None:
+        print(f"Peak GPU memory allocated: {peak_gpu_memory_mb:.2f} MiB")
 
     stats = collect_prototype_stats(model)
     if stats is not None:
@@ -168,6 +183,41 @@ def run_local_benchmark(args, device, dtype):
         print("Output drift vs plain Mamba3:")
         print(f"  logit_l2_vs_plain_mamba3: {drift_l2}")
         print(f"  logit_mae_vs_plain_mamba3: {drift_mae}")
+    else:
+        drift_l2 = None
+        drift_mae = None
+
+    result = {
+        "variant": args.variant,
+        "seed": args.seed,
+        "command": " ".join(sys.argv),
+        "device": device.type,
+        "device_name": torch.cuda.get_device_name(device) if device.type == "cuda" else "cpu",
+        "dtype": args.dtype,
+        "d_model": args.d_model,
+        "n_layer": args.n_layer,
+        "d_state": args.d_state,
+        "headdim": args.headdim,
+        "batch_size": args.batch,
+        "promptlen": args.promptlen,
+        "repeats": args.repeats,
+        "halting_threshold": args.halt_threshold,
+        "router_threshold": 0.0 if args.variant == "always_attention" else args.router_threshold,
+        "benchmark_tokens_per_second": benchmark_tokens_per_second,
+        "average_forward_time_ms": avg_ms,
+        "wall_clock_runtime_seconds": time.time() - run_start,
+        "peak_gpu_memory_mb": peak_gpu_memory_mb,
+        "logit_l2_vs_plain_mamba3": drift_l2,
+        "logit_mae_vs_plain_mamba3": drift_mae,
+    }
+    if stats is not None:
+        result.update(stats)
+
+    if args.output_json is not None:
+        output_path = Path(args.output_json)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+        print(f"Wrote {output_path}")
 
 
 def run_generation_benchmark(args, device, dtype):
@@ -264,6 +314,7 @@ parser.add_argument("--router-threshold", type=float, default=0.5)
 parser.add_argument("--router-temperature", type=float, default=1.0)
 parser.add_argument("--halt-threshold", type=float, default=0.5)
 parser.add_argument("--attention-num-heads", type=int, default=4)
+parser.add_argument("--output-json", type=str, default=None)
 args = parser.parse_args()
 
 device_name = args.device

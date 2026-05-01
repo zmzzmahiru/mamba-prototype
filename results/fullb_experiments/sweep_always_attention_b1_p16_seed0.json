@@ -1,0 +1,41 @@
+{
+  "variant": "always_attention",
+  "seed": 0,
+  "command": "benchmarks/benchmark_generation_mamba_simple.py --prototype --batch 1 --promptlen 16 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --repeats 20 --dtype float16 --variant always_attention --seed 0 --output-json results/fullb_experiments/sweep_always_attention_b1_p16_seed0.json",
+  "device": "cuda",
+  "device_name": "NVIDIA GeForce RTX 5090",
+  "dtype": "float16",
+  "d_model": 128,
+  "n_layer": 2,
+  "d_state": 32,
+  "headdim": 32,
+  "batch_size": 1,
+  "promptlen": 16,
+  "repeats": 20,
+  "halting_threshold": 0.5,
+  "router_threshold": 0.0,
+  "benchmark_tokens_per_second": 1508.2439931047968,
+  "average_forward_time_ms": 10.608363151550293,
+  "wall_clock_runtime_seconds": 6.565064907073975,
+  "peak_gpu_memory_mb": 11.44970703125,
+  "logit_l2_vs_plain_mamba3": 104.1336441040039,
+  "logit_mae_vs_plain_mamba3": 0.6479963064193726,
+  "num_layers_with_stats": 2,
+  "mean_executed_steps": 2.0,
+  "mean_attention_trigger_rate": 1.0,
+  "mean_active_fraction": 1.0,
+  "mean_halted_fraction": 0.0,
+  "mean_halt_step": 2.0,
+  "router_probs_first_layer": [
+    0.51953125,
+    0.499755859375
+  ],
+  "active_fractions_first_layer": [
+    1.0,
+    1.0
+  ],
+  "halted_fractions_first_layer": [
+    0.0,
+    0.0
+  ]
+}

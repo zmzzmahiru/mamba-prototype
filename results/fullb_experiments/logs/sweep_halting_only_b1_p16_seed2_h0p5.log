@@ -1,0 +1,22 @@
+$ .venv/bin/python benchmarks/benchmark_generation_mamba_simple.py --prototype --batch 1 --promptlen 16 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --repeats 20 --dtype float16 --variant halting_only --seed 2 --halt-threshold 0.5 --output-json results/fullb_experiments/sweep_halting_only_b1_p16_seed2_h0p5.json
+Running local Mamba3 full-sequence benchmark (halting_only)
+Number of parameters: 485796
+Input shape: (1, 16)
+Logits shape: (1, 16, 1024)
+Average forward time: 9ms
+Benchmark tokens/sec: 1753.57
+Peak GPU memory allocated: 10.03 MiB
+Prototype stats:
+  num_layers_with_stats: 2
+  mean_executed_steps: 2.0
+  mean_attention_trigger_rate: 0.0
+  mean_active_fraction: 0.328125
+  mean_halted_fraction: 0.671875
+  mean_halt_step: 1.46875
+  router_probs_first_layer: [0.476318359375, 0.5009765625]
+  active_fractions_first_layer: [0.625, 0.25]
+  halted_fractions_first_layer: [0.375, 0.75]
+Output drift vs plain Mamba3:
+  logit_l2_vs_plain_mamba3: 103.97684478759766
+  logit_mae_vs_plain_mamba3: 0.6511004567146301
+Wrote results/fullb_experiments/sweep_halting_only_b1_p16_seed2_h0p5.json

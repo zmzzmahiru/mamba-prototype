@@ -1,0 +1,22 @@
+$ .venv/bin/python benchmarks/benchmark_generation_mamba_simple.py --prototype --batch 1 --promptlen 16 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --repeats 20 --dtype float16 --variant always_attention --seed 0 --output-json results/fullb_experiments/sweep_always_attention_b1_p16_seed0.json
+Running local Mamba3 full-sequence benchmark (always_attention)
+Number of parameters: 617892
+Input shape: (1, 16)
+Logits shape: (1, 16, 1024)
+Average forward time: 11ms
+Benchmark tokens/sec: 1508.24
+Peak GPU memory allocated: 11.45 MiB
+Prototype stats:
+  num_layers_with_stats: 2
+  mean_executed_steps: 2.0
+  mean_attention_trigger_rate: 1.0
+  mean_active_fraction: 1.0
+  mean_halted_fraction: 0.0
+  mean_halt_step: 2.0
+  router_probs_first_layer: [0.51953125, 0.499755859375]
+  active_fractions_first_layer: [1.0, 1.0]
+  halted_fractions_first_layer: [0.0, 0.0]
+Output drift vs plain Mamba3:
+  logit_l2_vs_plain_mamba3: 104.1336441040039
+  logit_mae_vs_plain_mamba3: 0.6479963064193726
+Wrote results/fullb_experiments/sweep_always_attention_b1_p16_seed0.json

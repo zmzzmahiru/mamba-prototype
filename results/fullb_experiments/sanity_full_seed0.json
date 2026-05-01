@@ -1,0 +1,41 @@
+{
+  "variant": "full",
+  "seed": 0,
+  "command": "benchmarks/benchmark_generation_mamba_simple.py --prototype --variant full --batch 1 --promptlen 16 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --repeats 5 --seed 0 --dtype float16 --output-json results/fullb_experiments/sanity_full_seed0.json",
+  "device": "cuda",
+  "device_name": "NVIDIA GeForce RTX 5090",
+  "dtype": "float16",
+  "d_model": 128,
+  "n_layer": 2,
+  "d_state": 32,
+  "headdim": 32,
+  "batch_size": 1,
+  "promptlen": 16,
+  "repeats": 5,
+  "halting_threshold": 0.5,
+  "router_threshold": 0.5,
+  "benchmark_tokens_per_second": 1618.8208050097212,
+  "average_forward_time_ms": 9.883737564086914,
+  "wall_clock_runtime_seconds": 5.851217031478882,
+  "peak_gpu_memory_mb": 11.40771484375,
+  "logit_l2_vs_plain_mamba3": 105.07294464111328,
+  "logit_mae_vs_plain_mamba3": 0.6550201177597046,
+  "num_layers_with_stats": 2,
+  "mean_executed_steps": 2.0,
+  "mean_attention_trigger_rate": 0.75,
+  "mean_active_fraction": 0.296875,
+  "mean_halted_fraction": 0.703125,
+  "mean_halt_step": 1.46875,
+  "router_probs_first_layer": [
+    0.5126953125,
+    0.509765625
+  ],
+  "active_fractions_first_layer": [
+    0.4375,
+    0.125
+  ],
+  "halted_fractions_first_layer": [
+    0.5625,
+    0.875
+  ]
+}

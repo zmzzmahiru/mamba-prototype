@@ -1,0 +1,9 @@
+$ .venv/bin/python benchmarks/benchmark_generation_mamba_simple.py --prototype --batch 1 --promptlen 16 --d-model 128 --n-layer 2 --d-state 32 --headdim 32 --repeats 20 --dtype float16 --variant plain --seed 2 --output-json results/fullb_experiments/sweep_plain_b1_p16_seed2.json
+Running local Mamba3 full-sequence benchmark (plain)
+Number of parameters: 485280
+Input shape: (1, 16)
+Logits shape: (1, 16, 1024)
+Average forward time: 3ms
+Benchmark tokens/sec: 5259.62
+Peak GPU memory allocated: 9.59 MiB
+Wrote results/fullb_experiments/sweep_plain_b1_p16_seed2.json
