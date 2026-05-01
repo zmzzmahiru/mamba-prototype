@@ -48,6 +48,7 @@ class Mamba3(nn.Module):
         router_threshold=0.5,
         router_temperature=1.0,
         halt_threshold=0.5,
+        enable_halting_early_exit=False,
         attention_num_heads=4,
         collect_prototype_stats=False,
         #-------------------------------------------
@@ -79,6 +80,7 @@ class Mamba3(nn.Module):
         self.router_threshold = router_threshold
         self.router_temperature = max(router_temperature, 1e-6)
         self.halt_threshold = halt_threshold
+        self.enable_halting_early_exit = enable_halting_early_exit
         self.collect_prototype_stats = collect_prototype_stats
         self._last_prototype_stats = None
         if not self.is_mimo:
@@ -320,6 +322,8 @@ class Mamba3(nn.Module):
         halted_fraction_by_position = torch.zeros(u.shape[1], device=u.device, dtype=torch.float32)
         attention_trigger_count = 0
         executed_steps = 0
+        actual_executed_steps = 0
+        early_exit_triggered = False
 
         for step_idx in range(self.prototype_num_refinement_steps):
             executed_steps += 1
@@ -336,7 +340,16 @@ class Mamba3(nn.Module):
                 halt_steps,
             )
 
+            if self.enable_halting_early_exit and not next_active_mask.any():
+                active_mask = next_active_mask
+                active_fractions.append(float(active_mask.float().mean().item()))
+                halt_fractions.append(float((~active_mask).float().mean().item()))
+                halted_fraction_by_position += (~active_mask).float().mean(dim=0)
+                early_exit_triggered = True
+                break
+
             mamba_out = self._forward_mamba(current_states, seq_idx=seq_idx)
+            actual_executed_steps += 1
             current_states = torch.where(next_active_mask.unsqueeze(-1), mamba_out, current_states)
 
             router_prob = self._compute_step_router_prob(current_states, next_active_mask)
@@ -368,6 +381,9 @@ class Mamba3(nn.Module):
         if self.collect_prototype_stats:
             self._last_prototype_stats = {
                 "executed_steps": executed_steps,
+                "actual_executed_steps": actual_executed_steps,
+                "max_refinement_steps": self.prototype_num_refinement_steps,
+                "early_exit_triggered": early_exit_triggered,
                 "attention_trigger_count": attention_trigger_count,
                 "attention_trigger_rate": attention_trigger_count / max(executed_steps, 1),
                 "mean_active_fraction": sum(active_fractions) / max(len(active_fractions), 1),

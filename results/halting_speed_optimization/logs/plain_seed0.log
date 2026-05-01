@@ -1,0 +1,74 @@
+Running local Mamba3 full-sequence benchmark (plain)
+Number of parameters: 485280
+Traceback (most recent call last):
+  File "/workspace/mamba-prototype/benchmarks/benchmark_generation_mamba_simple.py", line 340, in <module>
+    run_local_benchmark(args, device=device, dtype=dtype)
+  File "/workspace/mamba-prototype/benchmarks/benchmark_generation_mamba_simple.py", line 146, in run_local_benchmark
+    logits = fn()
+             ^^^^
+  File "/workspace/mamba-prototype/benchmarks/benchmark_generation_mamba_simple.py", line 144, in fn
+    return model(input_ids).logits
+           ^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/mamba_ssm/models/mixer_seq_simple.py", line 280, in forward
+    hidden_states = self.backbone(input_ids, inference_params=inference_params, **mixer_kwargs)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/mamba_ssm/models/mixer_seq_simple.py", line 195, in forward
+    hidden_states, residual = layer(
+                              ^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/mamba_ssm/modules/block.py", line 67, in forward
+    hidden_states = self.mixer(hidden_states, inference_params=inference_params, **mixer_kwargs)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/mamba_ssm/modules/mamba3.py", line 184, in forward
+    return self._forward_mamba(u, seq_idx=seq_idx, cu_seqlens=cu_seqlens, inference_params=inference_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/mamba_ssm/modules/mamba3.py", line 229, in _forward_mamba
+    B = self.B_norm(B)
+        ^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/mamba_ssm/ops/triton/layernorm_gated.py", line 436, in forward
+    return rmsnorm_fn(x, self.weight, self.bias, z=z, eps=self.eps, group_size=self.group_size,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/mamba_ssm/ops/triton/layernorm_gated.py", line 385, in rmsnorm_fn
+    return LayerNormFn.apply(x, weight, bias, z, eps, group_size, norm_before_gate, True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/autograd/function.py", line 596, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/mamba_ssm/ops/triton/layernorm_gated.py", line 359, in forward
+    y, mean, rstd = _layer_norm_fwd(x, weight, bias, eps, z=z, group_size=group_size, norm_before_gate=norm_before_gate, is_rms_norm=is_rms_norm)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/mamba-prototype/mamba_ssm/ops/triton/layernorm_gated.py", line 139, in _layer_norm_fwd
+    with torch.cuda.device(x.device.index):
+  File "/workspace/mamba-prototype/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py", line 604, in __enter__
+    self.prev_idx = torch.cuda._exchange_device(self.idx)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: invalid argument to exchangeDevice

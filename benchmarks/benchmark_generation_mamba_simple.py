@@ -84,6 +84,7 @@ def build_local_model(args, device, dtype, variant=None):
             "router_threshold": settings["router_threshold"],
             "router_temperature": args.router_temperature,
             "halt_threshold": args.halt_threshold,
+            "enable_halting_early_exit": args.enable_halting_early_exit,
             "attention_num_heads": args.attention_num_heads,
             "collect_prototype_stats": True,
         },
@@ -111,6 +112,9 @@ def collect_prototype_stats(model):
     return {
         "num_layers_with_stats": len(layer_stats),
         "mean_executed_steps": mean("executed_steps"),
+        "mean_actual_executed_steps": mean("actual_executed_steps"),
+        "max_refinement_steps": mean("max_refinement_steps"),
+        "early_exit_trigger_rate": mean("early_exit_triggered"),
         "mean_attention_trigger_rate": mean("attention_trigger_rate"),
         "mean_active_fraction": mean("mean_active_fraction"),
         "mean_halted_fraction": mean("mean_halted_fraction"),
@@ -202,11 +206,15 @@ def run_local_benchmark(args, device, dtype):
         "promptlen": args.promptlen,
         "repeats": args.repeats,
         "halting_threshold": args.halt_threshold,
+        "enable_halting_early_exit": args.enable_halting_early_exit,
         "router_threshold": 0.0 if args.variant == "always_attention" else args.router_threshold,
         "benchmark_tokens_per_second": benchmark_tokens_per_second,
+        "benchmark_tok_s": benchmark_tokens_per_second,
         "average_forward_time_ms": avg_ms,
+        "wall_clock_ms": avg_ms,
         "wall_clock_runtime_seconds": time.time() - run_start,
         "peak_gpu_memory_mb": peak_gpu_memory_mb,
+        "peak_gpu_memory": peak_gpu_memory_mb,
         "logit_l2_vs_plain_mamba3": drift_l2,
         "logit_mae_vs_plain_mamba3": drift_mae,
     }
@@ -313,6 +321,7 @@ parser.add_argument("--refinement-steps", type=int, default=2)
 parser.add_argument("--router-threshold", type=float, default=0.5)
 parser.add_argument("--router-temperature", type=float, default=1.0)
 parser.add_argument("--halt-threshold", type=float, default=0.5)
+parser.add_argument("--enable-halting-early-exit", action="store_true")
 parser.add_argument("--attention-num-heads", type=int, default=4)
 parser.add_argument("--output-json", type=str, default=None)
 args = parser.parse_args()
@@ -320,6 +329,8 @@ args = parser.parse_args()
 device_name = args.device
 if device_name == "cuda" and not torch.cuda.is_available():
     device_name = "cpu"
+elif device_name == "cuda":
+    device_name = "cuda:0"
 device = torch.device(device_name)
 dtype = parse_dtype(args.dtype)
 
